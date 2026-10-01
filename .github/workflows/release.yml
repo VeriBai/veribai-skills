@@ -1,0 +1,43 @@
+# Tags and publishes a GitHub Release when .claude-plugin/plugin.json gets a new version on main.
+# Runs only shell steps with the preinstalled gh CLI: no third-party (or GitHub) actions.
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'VeriBai/veribai-skills'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      SHA: ${{ github.sha }}
+    steps:
+      - name: Tag and release the plugin version if it is new
+        run: |
+          set -euo pipefail
+          version=$(gh api "repos/$REPO/contents/.claude-plugin/plugin.json?ref=$SHA" \
+            -H "Accept: application/vnd.github.raw" | jq -r '.version')
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::plugin.json version '$version' is not MAJOR.MINOR.PATCH"
+            exit 1
+          fi
+          tag="v$version"
+          if gh api "repos/$REPO/git/ref/tags/$tag" --silent 2>/dev/null; then
+            echo "$tag already exists; nothing to release."
+            exit 0
+          fi
+          gh release create "$tag" --repo "$REPO" --target "$SHA" \
+            --title "$tag" --generate-notes
+          echo "Released $tag at $SHA."
