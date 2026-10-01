@@ -1,0 +1,11 @@
+{
+  "name": "veribai",
+  "displayName": "VeriBai",
+  "version": "0.1.0",
+  "description": "Guía para integrar la API de VeriBai (VeriFactu y TicketBAI) en tu software, y revisar una integración existente.",
+  "author": { "name": "VeriBai", "email": "soporte@veribai.com", "url": "https://veribai.com" },
+  "homepage": "https://veribai.com/docs",
+  "repository": "https://github.com/VeriBai/veribai-skills",
+  "license": "Apache-2.0",
+  "keywords": ["veribai", "verifactu", "ticketbai", "aeat", "facturacion", "spain", "tax"]
+}
