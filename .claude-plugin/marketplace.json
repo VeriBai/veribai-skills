@@ -1,0 +1,14 @@
+{
+  "name": "veribai",
+  "description": "Skills oficiales de VeriBai para integrar VeriFactu y TicketBAI.",
+  "owner": { "name": "VeriBai", "email": "soporte@veribai.com", "url": "https://veribai.com" },
+  "plugins": [
+    {
+      "name": "veribai",
+      "source": "./",
+      "description": "Guía para integrar la API de VeriBai (VeriFactu y TicketBAI) en tu software, y revisar una integración existente.",
+      "category": "development",
+      "tags": ["verifactu", "ticketbai", "facturacion", "aeat"]
+    }
+  ]
+}
