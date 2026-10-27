@@ -9,7 +9,7 @@ Cursor, GitHub Copilot, Gemini CLI y cualquier agente compatible con `SKILL.md`.
 
 | Skill | Qué hace |
 | --- | --- |
-| [`integrar-veribai`](skills/integrar-veribai/SKILL.md) | Guía la integración: qué sistema aplica, cómo tratar el veredicto de la administración, reintentos seguros, importes y fechas, webhooks y el paso a producción. Se activa sola cuando trabajas con VeriBai. |
+| [`integrar-veribai`](skills/integrar-veribai/SKILL.md) | Guía la integración: qué sistema aplica, quién genera el documento de factura (tu software con el QR, o VeriBai emitiendo y devolviendo el PDF), cómo tratar el veredicto de la administración, reintentos seguros, importes y fechas, webhooks y el paso a producción. Se activa sola cuando trabajas con VeriBai. |
 | [`revisar-veribai`](skills/revisar-veribai/SKILL.md) | Revisa una integración existente contra la [checklist](skills/integrar-veribai/references/checklist.md) y te dice qué cambiar, con fichero y línea. Se invoca a mano. |
 
 ## Qué hacen y qué no

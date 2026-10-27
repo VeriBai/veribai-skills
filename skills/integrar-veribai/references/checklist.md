@@ -23,41 +23,49 @@ are in the linked docs; if anything here contradicts them, the docs win.
 8. **The issue date is computed in `Europe/Madrid`**, formatted `DD-MM-YYYY`.
 9. **Each issuer uses the system that applies to it** (VeriFactu, or TicketBAI and province),
    and is registered as a client of the account.
+10. **If VeriBai emits the invoice (`/v1/documentos/emitir`): `pdf_pendiente` and
+    `502 EMISION_INCIERTA` are handled with `reanudar`**, never with a second `emitir`; the
+    body is the commercial document (lines and percentages), with no pre-computed VAT or
+    record fields (https://veribai.com/docs/api/documentos.md).
 
 ## B. Webhooks
 
-10. **The signature is verified over the raw body**, before parsing, with a constant-time
+11. **The signature is verified over the raw body**, before parsing, with a constant-time
     comparison. An invalid signature is rejected without processing.
-11. **Deliveries are deduplicated on `idEntrega`.** Receiving the same delivery twice does not
+12. **Deliveries are deduplicated on `idEntrega`.** Receiving the same delivery twice does not
     repeat the work.
-12. **The endpoint responds `2xx` within 10 seconds** and processes in the background.
-13. **There is a plan for delivery gaps**: after an outage, verdicts are recovered with
+13. **The endpoint responds `2xx` within 10 seconds** and processes in the background.
+14. **There is a plan for delivery gaps**: after an outage, verdicts are recovered with
     `GET /v1/registros?veredictoDesde=`, and someone is alerted if the webhook is suspended.
 
 ## C. Keys and environments
 
-14. **No key in the code or the repository.** Environment variables or a secrets manager.
-15. **The environment is chosen explicitly** in configuration, and startup checks the key with
+15. **No key in the code or the repository.** Environment variables or a secrets manager.
+16. **The environment is chosen explicitly** in configuration, and startup checks the key with
     `GET /v1/cuenta` (and logs which environment it is in).
-16. **There is a rotation procedure**: every service sharing the key is updated within the
+17. **There is a rotation procedure**: every service sharing the key is updated within the
     overlap window, and a compromised key is rotated **and** revoked
     (https://veribai.com/docs/autenticacion.md).
+18. **If the software holds several customers' keys: one key per customer**, never shared,
+    verified with `GET /v1/cuenta` and labelled by its response, and replaceable by the
+    customer from the software without a deploy.
 
 ## D. What the end customer sees
 
-17. **The QR is printed on the invoice** the customer receives
-    (https://veribai.com/docs/consultar.md).
-18. **Validation errors are shown with their field** (`errors[]`), so whoever invoices can fix
+19. **The QR reaches the end customer**: either printed by your software from
+    `consultar` (https://veribai.com/docs/consultar.md), or inside the PDF returned by
+    `/v1/documentos/emitir` (https://veribai.com/docs/api/documentos.md).
+20. **Validation errors are shown with their field** (`errors[]`), so whoever invoices can fix
     them.
-19. **No fiscal rules are copied into the code** that could block invoices the API would
+21. **No fiscal rules are copied into the code** that could block invoices the API would
     accept. Format validation only.
 
 ## E. Before LIVE (the person decides and does it)
 
-20. **The integration has been through Sandbox**: submissions, the rejection cases,
+22. **The integration has been through Sandbox**: submissions, the rejection cases,
     cancellation or corrective invoices if used, and webhook reception.
-21. **Every issuer has a signed representation**
+23. **Every issuer has a signed representation**
     (https://veribai.com/docs/api/representacion.md); without it, LIVE returns
     `403 REPRESENTATION_PENDING`.
-22. **The production serie starts clean**: the LIVE chain begins with the first real invoice
+24. **The production serie starts clean**: the LIVE chain begins with the first real invoice
     (https://veribai.com/docs/entornos.md).
